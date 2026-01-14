@@ -1,0 +1,27 @@
+{
+  "name": "baiim-csrf-defense",
+  "version": "1.0.0",
+  "description": "Repozytorium do projektu z przedmiotu",
+  "main": "code.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asiagorczyca/baiim-csrf-defense.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asiagorczyca/baiim-csrf-defense/issues"
+  },
+  "homepage": "https://github.com/asiagorczyca/baiim-csrf-defense#readme",
+  "dependencies": {
+    "body-parser": "^2.2.2",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "express-session": "^1.18.2"
+  }
+}
