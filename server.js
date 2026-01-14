@@ -26,81 +26,63 @@ app.get('/', (req, res) => {
 
     res.send(`
         <h1>Panel Bezpieczeństwa</h1>
-        <p>E-mail: <b>${userDB.email}</b></p>
+        <input type="email" id="newEmailInput" placeholder="Wpisz nowy e-mail" required>
         <hr>
-        <h3>Zmień E-mail</h3>
-        <form id="updateForm">
-            <input type="hidden" id="token" value="${req.session.csrfToken}">
-            <input type="email" id="newEmail" placeholder="Nowy e-mail" required>
-            <button type="button" onclick="sendUpdate()">Zaktualizuj</button>
-        </form>
-
+        <button onclick="updateEmail()">Zmień e-mail</button>
         <script>
-            async function sendUpdate() {
-                const email = document.getElementById('newEmail').value;
-                const token = document.getElementById('token').value;
-                
-                // Zadanie 4: Frontend wysyła JSON
-                const response = await fetch('/update-email', {
+            function updateEmail() {
+                fetch('/update-email', {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json' 
-                    },
-                    body: JSON.stringify({ email: email, csrfToken: token })
-                });
-                const result = await response.text();
-                alert(result);
-                location.reload();
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'test@json.pl', csrfToken: 'fake' })
+                }).then(() => location.reload());
             }
         </script>
     `);
 });
 
 app.post('/update-email', (req, res) => {
-    console.log("\n--- [RAPORT BLUE TEAM] Analiza żądania POST ---");
-
-    let isAttackBlocked = false;
-
-    if (!req.session.userIsLoggedIn) {
-        console.log("Wykonano zadanie 1");
-        isAttackBlocked = true;
-    } else {
-        console.log("Zadanie 1 zostało wykonane błędnie");
-    }
 
     const origin = req.get('Origin');
-    if (origin !== 'http://localhost:3000') {
-        console.log("Wykonano zadanie 3");
-        isAttackBlocked = true;
-    } else {
-        console.log("Zadanie 3 zostało wykonane błędnie");
+    const isCrossOrigin = origin !== 'http://localhost:3000';
+    let failures = [];
+
+
+    if (isCrossOrigin && req.session.userIsLoggedIn) {
+        console.log("Zadanie 1 zostało wykonane błędnie");
+        failures.push(1);
+    } else if (isCrossOrigin && !req.session.userIsLoggedIn) {
+        console.log("Zadanie 1 zostało wykonane poprawnie");
     }
 
-    const contentType = req.get('Content-Type');
-    if (contentType !== 'application/json') {
-        console.log("Wykonano zadanie 4");
-        isAttackBlocked = true;
-    } else {
-        console.log("Zadanie 4 zostało wykonane błędnie");
-    }
-
-    const clientToken = req.body.csrfToken;
-    const serverToken = req.session.csrfToken;
-    if (!clientToken || clientToken !== serverToken) {
-        console.log("Wykonano zadanie 2");
-        isAttackBlocked = true;
-    } else {
+    if (!req.body.csrfToken || req.body.csrfToken !== req.session.csrfToken) {
         console.log("Zadanie 2 zostało wykonane błędnie");
+        failures.push(2);
+    } else {
+        console.log("Zadanie 2 zostało wykonane poprawnie");
     }
 
-    if (isAttackBlocked) {
-        console.log("Udało się zablokować atak");
-        return res.status(403).send("Odmowa dostępu");
+    if (isCrossOrigin) {
+        console.log("Zadanie 3 zostało wykonane błędnie");
+        failures.push(3);
     } else {
-        console.log("System jest podatny!!!");
-        userDB.email = req.body.email;
-        res.send("Dane zaktualizowane!");
+        console.log("Zadanie 3 zostało wykonane poprawnie");
+    }
+
+    if (req.get('Content-Type') !== 'application/json') {
+        console.log("Zadanie 4 zostało wykonane błędnie");
+        failures.push(4);
+    } else {
+        console.log("Zadanie 4 zostało wykonane poprawnie");
+    }
+
+    userDB.email = req.body.email;
+
+    if (failures.length > 0) {
+        console.log("Strona nie jest jeszcze w pełni zabezpieczona");
+    } else {
+        console.log("Udało się zabezpieczyć stronę");
     }
 });
 
-app.listen(3000, () => console.log('Serwer działa na http://localhost:3000'));
+app.listen(3000, () => console.log('Serwer diagnostyczny na http://localhost:3000'));
