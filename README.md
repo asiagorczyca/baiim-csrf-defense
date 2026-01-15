@@ -10,7 +10,7 @@ To laboratorium polega na zabezpieczeniu pliku server.js zgodnie z wymienionymi 
 
 ## Zadania
 
-Sprawdź poprawność każdego wykonanego ćwiczenia przez uruchomienie pliku `attack.html` i jeśli server zwróci błąd Forbidden i w konsoli pojawi się informacja o wykonaniu zadania, to zostało ono wykonane poprawnie.
+Sprawdź poprawność każdego wykonanego ćwiczenia przez uruchomienie ataku i obserwowanie wpisów w konsoli serwera. Uruchomienia ataku polega na przejściu do folderu attack i uruchomieniu strony html na innym porcie `npx serve . -l 4000` oraz wejściu w przeglądarce na stronę http://localhost:4000. Jeśli wyświetli się komunikat `"zmiana została zatwierdzona"`, to po odświeżeniu strony z formularzem e-mail zmieni się na `hacker@evil.com`. Poprawne wykonanie wszystkich zadań spowoduje wyświetelenie się komunikatu w konsoli serwera o zabezpieczeniu strony.
 
 ### Zadanie 1
 
@@ -20,12 +20,11 @@ Zabroń przeglądarce wysyłania ciasteczka sesji kiedy żądanie pochodzi ze st
 
 <details>
 <summary>Rozwiązanie</summary>
-1. Znajdź, gdzie konfigurowana jest sesja w server.js
+
+  1. Znajdź, gdzie konfigurowana jest sesja w `server.js`
   
 2. Dodaj `sameSite: 'Lax'` do cookie
-    
-4. Spróbuj ponownie otworzyć plik `attack.html`. Adres e-mail nie powinien się już zmienić
-     
+       
 </details>
 
 ### Zadanie 2
@@ -35,13 +34,15 @@ Upewnienie się, że każde żądanie zmieniające stan aplikacji wymaga unikaln
 <details>
 <summary>Rozwiązanie</summary>
 
-1. W metodzie `app.get('/')` wygeneruj losowy ciąg znaków i zapisz go w sesji użytkownika jako `req.session.csrfToken`.
+1. W metodzie `app.get('/')` wygeneruj losowy ciąg znaków i zapisz go w sesji użytkownika jako `req.session.csrfToken` (`req.session.csrfToken = crypto.randomBytes(16).toString('hex');`)
 
-2. Przekaż ten token do widoku i umieść go w ukrytym polu formularza HTML `(<input type="hidden">)`.
+2. W tej samej metodzie w ciele odpowiedzi dodaj `X-CSRF-Token: csrfToken` (przed funkcją dodaj `const csrfToken = "${token}";`) 
 
 3. W metodzie `app.post('/update-email')` dodaj logikę porównującą token przesłany w formularzu z tokenem zapisanym w sesji.
 
 4. Jeśli tokeny nie są identyczne lub tokenu brakuje, przerwij operację i zwróć błąd `res.status(403)`.
+
+   Podpowiedź: trzeba porównać `req.headers['x-csrf-token'];` z `req.session.csrfToken`
 
 </details>
 
@@ -49,29 +50,23 @@ Upewnienie się, że każde żądanie zmieniające stan aplikacji wymaga unikaln
 
 **Verifying Origin & Referer**
 
-Wykorzystaj nagłówki HTTP przesyłane przez przeglądarkę do sprawdzenia, czy żądanie faktycznie zostało zainicjowane z naszej domeny. Stwórz funkcję dla tras typu POST.
+Wykorzystaj nagłówki HTTP przesyłane przez przeglądarkę do sprawdzenia, czy żądanie faktycznie zostało zainicjowane z naszej domeny. W `app.post('/update-email', (req, res)` dodaj sprawdzanie Originu.
 <details>
 <summary>Rozwiązanie</summary>
   
-```js
-const origin = req.get('Origin');
-if (origin !== 'http://localhost:3000') {
-  return res.status(403).send("Żądanie Cross-Site zostało zablokowane (Niepoprawny Origin)"); 
-}
-```
+Dodaj do `app.post('/update-email', (req, res)` porównanie originu 
+Podpowiedź: `req.get('Origin')` porównaj ze swoim adresem serwera np. `http://localhost:3000`
 
 </details> 
 
 ### Zadanie 4
 
 **Content-Type Enforcement**
-Zmień logikę `server.js` tak, aby oczekiwał wyłącznie danych w formacie JSON 
+Sprawdź, czy w nagłówkach żądania pojawiło się `application/json` 
 <details>
 <summary>Rozwiązanie</summary>
 
-1. Zmodyfikuj server.js aby zamiast standardowego wysłania formularza używał funkcji `fetch()` z nagłówkiem: `headers: {'Content-Type': 'application/json'}`.
-
-2. Zmodyfikuj server.js, aby sprawdzał, czy nagłówek `req.headers['content-type']` to dokładnie `application/json`.
+Zmodyfikuj `app.post('/update-email', (req, res)`, aby serwer zwracał błąd HTTP 400 w przypadku `req.get('Content-Type')` innego niż `'application/json'`.
 
 </details>
 
