@@ -23,7 +23,7 @@ Zabroń przeglądarce wysyłania ciasteczka sesji kiedy żądanie pochodzi ze st
 
   1. Znajdź, gdzie konfigurowana jest sesja w `server.js`
   
-2. Dodaj `sameSite: 'Lax'` do cookie
+2. Dodaj `SameSite: 'Lax'` do cookie
        
 </details>
 
