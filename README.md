@@ -10,7 +10,7 @@ To laboratorium polega na zabezpieczeniu pliku server.js zgodnie z wymienionymi 
 
 ## Zadania
 
-Sprawdź poprawność każdego wykonanego ćwiczenia przez uruchomienie ataku i obserwowanie wpisów w konsoli serwera. Uruchomienia ataku polega na przejściu do folderu attack i uruchomieniu strony html na innym porcie `npx serve . -l 4000` oraz wejściu w przeglądarce na stronę http://localhost:4000. Jeśli wyświetli się komunikat `"zmiana została zatwierdzona"`, to po odświeżeniu strony z formularzem e-mail zmieni się na `hacker@evil.com`. 
+Sprawdź poprawność każdego wykonanego ćwiczenia przez uruchomienie ataku i obserwowanie wpisów w konsoli serwera. Uruchomienia ataku polega na przejściu do folderu attack i uruchomieniu strony html na innym porcie `npx serve . -l 4000` oraz wejściu w przeglądarce na stronę `http://localhost:4000/attack`. Jeśli wyświetli się komunikat `"zmiana została zatwierdzona"`, to po odświeżeniu strony z formularzem e-mail zmieni się na `hacker@evil.com`. 
 
 ### Zadanie 1
 
