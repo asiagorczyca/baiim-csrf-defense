@@ -65,8 +65,7 @@ Podpowiedź: `req.get('Origin')` porównaj ze swoim adresem serwera np. `http://
 </details> 
 
 
-### Po czym rozpoznać prawidłowe rozwiązanie?
-Poprawne rozwiązanie rozpoznasz po tym, że serwer odrzuca z błędem 403 każde żądanie, w którym nagłówek `Origin` wskazuje na obcą domenę (np. `http://127.0.0.1:4000`), a akceptuje tylko te z `http://localhost:3000`.
+
 
 
 ### Zadanie 4
