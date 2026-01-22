@@ -78,7 +78,9 @@ Sprawdź, czy w nagłówkach żądania pojawiło się `application/json`
 
 Zmodyfikuj `app.post('/update-email', (req, res)`, aby serwer zwracał błąd HTTP 400 w przypadku `req.get('Content-Type')` innego niż `'application/json'`.
 
+
+</details>
+
 ### Po czym rozpoznać prawidłowe rozwiązanie?
 Poprawne rozwiązanie rozpoznasz po tym, że serwer zwraca błąd 400 dla ataku wysyłanego przez zwykły formularz HTML (typ `application/x-www-form-urlencoded`), wymagając nagłówka `Content-Type: application/json`.
-</details>
 
