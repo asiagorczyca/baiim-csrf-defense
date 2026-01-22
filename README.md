@@ -26,6 +26,8 @@ Zabroń przeglądarce wysyłania ciasteczka sesji kiedy żądanie pochodzi ze st
 2. Dodaj `sameSite: 'Lax'` do cookie
        
 </details>
+### Po czym rozpoznać prawidłowe rozwiązanie?
+Poprawne rozwiązanie rozpoznasz po tym, że podczas ataku (na porcie 4000) przeglądarka w ogóle nie dołącza nagłówka `Cookie` do wysyłanego żądania, przez co serwer nie rozpoznaje sesji użytkownika.
 
 ### Zadanie 2
 
@@ -46,6 +48,9 @@ Upewnienie się, że każde żądanie zmieniające stan aplikacji wymaga unikaln
 
 </details>
 
+### Po czym rozpoznać prawidłowe rozwiązanie?
+Poprawne rozwiązanie rozpoznasz po tym, że legalne żądanie (na porcie 3000) zawiera w nagłówkach `X-CSRF-Token`, natomiast atak zostaje zablokowany (błąd 403) z powodu braku tego tokena w żądaniu hakera.
+
 ### Zadanie 3
 
 **Verifying Origin & Referer**
@@ -59,6 +64,11 @@ Podpowiedź: `req.get('Origin')` porównaj ze swoim adresem serwera np. `http://
 
 </details> 
 
+
+### Po czym rozpoznać prawidłowe rozwiązanie?
+Poprawne rozwiązanie rozpoznasz po tym, że serwer odrzuca z błędem 403 każde żądanie, w którym nagłówek `Origin` wskazuje na obcą domenę (np. `http://127.0.0.1:4000`), a akceptuje tylko te z `http://localhost:3000`.
+
+
 ### Zadanie 4
 
 **Content-Type Enforcement**
@@ -68,5 +78,7 @@ Sprawdź, czy w nagłówkach żądania pojawiło się `application/json`
 
 Zmodyfikuj `app.post('/update-email', (req, res)`, aby serwer zwracał błąd HTTP 400 w przypadku `req.get('Content-Type')` innego niż `'application/json'`.
 
+### Po czym rozpoznać prawidłowe rozwiązanie?
+Poprawne rozwiązanie rozpoznasz po tym, że serwer zwraca błąd 400 dla ataku wysyłanego przez zwykły formularz HTML (typ `application/x-www-form-urlencoded`), wymagając nagłówka `Content-Type: application/json`.
 </details>
 
