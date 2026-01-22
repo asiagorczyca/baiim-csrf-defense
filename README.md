@@ -26,7 +26,8 @@ Zabroń przeglądarce wysyłania ciasteczka sesji kiedy żądanie pochodzi ze st
 2. Dodaj `sameSite: 'Lax'` do cookie
        
 </details>
-### Po czym rozpoznać prawidłowe rozwiązanie?
+
+###  Po czym rozpoznać prawidłowe rozwiązanie?
 Poprawne rozwiązanie rozpoznasz po tym, że podczas ataku (na porcie 4000) przeglądarka w ogóle nie dołącza nagłówka `Cookie` do wysyłanego żądania, przez co serwer nie rozpoznaje sesji użytkownika.
 
 ### Zadanie 2
